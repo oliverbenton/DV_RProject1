@@ -20,42 +20,48 @@ We now produce an interesting plot for each dataframe.
 ggplot(dfc, aes(x=CUSTOMER_STATE, y= CUSTOMER_CITY)) + geom_point()
 ``` 
   
-We think it is interesting that there is a city called Fairfield in two states. How is that even possible! We do not know.
+Plot 1) We think it is interesting that there is a city called Fairfield in two states. How is that even possible! We do not know.
 ```{r}
 ggplot(dfi, aes(x=ARTIST, y=UNIT_PRICE)) + geom_point()
 ```
   
-We think it is interesting that the same artists charge somewhat similarly for their all their items.
+Plot 2) We think it is interesting that the same artists charge somewhat similarly for their all their items.
 ```{r}
 ggplot(dfo, aes(x=ORDER_DATE, y=CUSTOMER_ID)) + geom_point()
 ```
   
-We think it is interesting that some dates have more customers ordering than other dates.
+Plot 3) We think it is interesting that some dates have more customers ordering than other dates.
 ```{r}
 ggplot(dfod, aes(x=ITEM_ID, y= ORDER_QTY)) + geom_point()
 ```
   
-We think it is interesting that some items you would order more of at a time. But that is just us.
+Plot 4) We think it is interesting that some items you would order more of at a time. But that is just us.
   
 We now load the data frame for the entire data set.
 ```{r} 
 mega_set <- data.frame(eval(parse(text=substring(getURL(URLencode('http://129.152.144.84:5001/rest/native/?query="select * from orders o join customers c on o.customer_id = c.customer_id join order_details d on o.order_id = d.order_id join items i on d.item_id = i.item_id"'), httpheader=c(DB='jdbc:oracle:thin:@129.152.144.84:1521/PDB1.usuniversi01134.oraclecloud.internal', USER='DV_ORDERS', PASS='orcl', MODE='native_mode', MODEL='model', returnFor = 'R', returnDimensions = 'False'), verbose = TRUE), 1, 2^31-1))))
 ```
   
-We now produce the first plot. We used the as.Date and as.factor functionality. 
+We now produce the fifth plot. We used the as.Date and as.factor functionality. 
 ```{r}
 p1 <- ggplot(mega_set, aes(x=as.Date(ORDER_DATE, "%Y-%m-%d"), y=as.Date(SHIPPED_DATE, "%Y-%m-%d"), color = as.factor(UNIT_PRICE))) + geom_point(na.rm=TRUE)
 p1 + facet_wrap(~CUSTOMER_STATE)
 ```
   
-We now produce the second plot. 
+Plot 5) It appears that California has a somewhat continuous stream of orders over time, and Californians buy few of the cheap units.
+
+We now produce the sixth plot. 
 ```{r}
 p2 <- ggplot(mega_set, aes(x=as.Date(ORDER_DATE, "%Y-%m-%d"), y=as.Date(SHIPPED_DATE, "%Y-%m-%d"), color = as.factor(TITLE))) + geom_point(na.rm=TRUE)
 p2 + facet_wrap(~CUSTOMER_STATE)
 ```
   
-We now produce the third plot.
+Plot 6) It appears that states have different preferences of albums, but California appears to like everything.
+    
+We now produce the seventh plot.
 ```{r}
 p3 <- ggplot(mega_set, aes(x=as.Date(ORDER_DATE, "%Y-%m-%d"), y=as.Date(SHIPPED_DATE, "%Y-%m-%d"), color = as.factor(ARTIST))) + geom_point(na.rm=TRUE)
 p3 + facet_wrap(~CUSTOMER_STATE)
 ``` 
+  
+Plot 7) It appears that New York is crazy about Umami.
