@@ -30,30 +30,32 @@ We think it is interesting that the same artists charge somewhat similarly for t
 ggplot(dfo, aes(x=ORDER_DATE, y=CUSTOMER_ID)) + geom_point()
 ```
   
-We think it is interesting that people order more things on some dates than other dates.
+We think it is interesting that some dates have more customers ordering than other dates.
 ```{r}
 ggplot(dfod, aes(x=ITEM_ID, y= ORDER_QTY)) + geom_point()
 ```
   
 We think it is interesting that some items you would order more of at a time. But that is just us.
+  
+We now load the data frame for the entire data set.
 ```{r} 
 mega_set <- data.frame(eval(parse(text=substring(getURL(URLencode('http://129.152.144.84:5001/rest/native/?query="select * from orders o join customers c on o.customer_id = c.customer_id join order_details d on o.order_id = d.order_id join items i on d.item_id = i.item_id"'), httpheader=c(DB='jdbc:oracle:thin:@129.152.144.84:1521/PDB1.usuniversi01134.oraclecloud.internal', USER='DV_ORDERS', PASS='orcl', MODE='native_mode', MODEL='model', returnFor = 'R', returnDimensions = 'False'), verbose = TRUE), 1, 2^31-1))))
 ```
-We now load the data frame into for the entire data set.
+  
+We now produce the first plot. We used the as.Date and as.factor functionality. 
 ```{r}
-p1 <- ggplot(mega_set, aes(x=as.Date(ORDER_DATE, "%Y-%m-%d"), y=as.Date(SHIPPED_DATE, "%Y-%m-%d"), color = as.factor(UNIT_PRICE))) + geom_point()
+p1 <- ggplot(mega_set, aes(x=as.Date(ORDER_DATE, "%Y-%m-%d"), y=as.Date(SHIPPED_DATE, "%Y-%m-%d"), color = as.factor(UNIT_PRICE))) + geom_point(na.rm=TRUE)
 p1 + facet_wrap(~CUSTOMER_STATE)
 ```
-We now produce the first plot. We used the as.Date and as.factor functionality. 
-(Warnings stating missing values, we think that this are point that could not be plotted do to missing values in the database)
+  
+We now produce the second plot. 
 ```{r}
-p2 <- ggplot(mega_set, aes(x=as.Date(ORDER_DATE, "%Y-%m-%d"), y=as.Date(SHIPPED_DATE, "%Y-%m-%d"), color = as.factor(TITLE))) + geom_point()
+p2 <- ggplot(mega_set, aes(x=as.Date(ORDER_DATE, "%Y-%m-%d"), y=as.Date(SHIPPED_DATE, "%Y-%m-%d"), color = as.factor(TITLE))) + geom_point(na.rm=TRUE)
 p2 + facet_wrap(~CUSTOMER_STATE)
 ```
-We now produce the second plot. 
-(Warnings stating missing values, we think that this are point that could not be plotted do to missing values in the database)
+  
+We now produce the third plot.
 ```{r}
-p3 <- ggplot(mega_set, aes(x=as.Date(ORDER_DATE, "%Y-%m-%d"), y=as.Date(SHIPPED_DATE, "%Y-%m-%d"), color = as.factor(ARTIST))) + geom_point()
+p3 <- ggplot(mega_set, aes(x=as.Date(ORDER_DATE, "%Y-%m-%d"), y=as.Date(SHIPPED_DATE, "%Y-%m-%d"), color = as.factor(ARTIST))) + geom_point(na.rm=TRUE)
 p3 + facet_wrap(~CUSTOMER_STATE)
 ``` 
-We now produce the third plot.(Warnings stating missing values, we think that this are point that could not be plotted do to missing values in the database)
